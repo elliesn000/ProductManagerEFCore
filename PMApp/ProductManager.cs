@@ -118,6 +118,32 @@ public class ProductManager
         }
     }
 
+    //================================================================================================================= CREATE LIST PRODUCT
+    public static List<Product> CreatListProduct(string inputNameProduct)
+    {
+        using (var context = new AppContext())
+        {
+            var allProduct = context.Products.ToList();
+            if (inputNameProduct != "0")
+            {
+                var samenameProduct = context.Products
+                    .Where(p => p.ProductName.Contains(inputNameProduct))
+                    .OrderBy(p => p.ProductId)
+                    .ToList();
+                if (samenameProduct.Count != 0)
+                {
+                    return samenameProduct;
+                }
+                else
+                {
+                    Console.WriteLine("Don't have this product, you can continue with all our product");
+                    return allProduct;
+                }
+            }
+            return allProduct;
+        }
+    }
+
 
 
     //================================================================================================================= READ
@@ -135,6 +161,8 @@ public class ProductManager
             }
         }
     }
+
+
 
     //=============================================================================================================== FIND
     public static void FindProductWithId(int inputId)
@@ -161,7 +189,7 @@ public class ProductManager
             using (var context = new AppContext())
             {
                 var samenameProduct = context.Products
-                                             .Where(p => p.ProductName == inputName)
+                                             .Where(p => p.ProductName.Contains(inputName))
                                              .OrderBy(p => p.ProductId)
                                              .ToList();
                 if (samenameProduct.Count != 0)

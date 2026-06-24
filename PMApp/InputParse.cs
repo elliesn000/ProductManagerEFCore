@@ -16,7 +16,7 @@ public class InputParse
             {
                 return input;
             }
-            Console.WriteLine("This value cannot be empty! Input again. Or press 0 return Main Menu.");
+            Console.WriteLine("\nThis value cannot be empty! Input again. Or Press 0 return Main Menu.");
         }
     }
 
@@ -30,7 +30,7 @@ public class InputParse
             {
                 return intout;
             }
-            Console.WriteLine(@"This value invalid, need int type! Input again. Or press 0 return Main Menu.");
+            Console.WriteLine("\nThis value invalid, need int type! Input again. Or Press 0 return Main Menu");
 
         }        
     }

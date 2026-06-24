@@ -11,16 +11,17 @@ public class UserManager
         
         DbClasses.UserDb.CheckUser(inputUser);
 
-        while (true)
-        {
+        while (true)        {
+            
             //--- MENU USER
 
-            int choose = MProgram.InputParse.GetInt(@"
+            int choose = MProgram.InputParse.GetInt(@$"
 ================================
+    USER MENU: Hello {inputUser}
+
 1. Buy Product
 
 2. See All Product You Bought
-
 
 0. Return Login Menu
 
@@ -47,9 +48,14 @@ Press Number to choose
                         Console.ReadLine();
                         break;
                     }
+                default:
+                    {
+                        Console.WriteLine("Input again");
+                        break;
+                    }
             }
-            Console.Clear();            
-            continue; ;
+            
+            continue;
         }
     }
 }

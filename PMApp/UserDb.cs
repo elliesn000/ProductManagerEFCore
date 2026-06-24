@@ -43,19 +43,16 @@ public class UserDb
     {        
         using (var context = new AppContext())
         {
-            string choose = MProgram.InputParse.GetString("Input name product to Find or Press 0 to See all");
-            if (choose =="0")
+            string inputNameProduct = MProgram.InputParse.GetString("Input name product to Find or Press 0 to See all");            
+            var listProduct = ProductManager.CreatListProduct(inputNameProduct);
+            foreach (var p in listProduct)
             {
-                ProductManager.ShowAllProduct();
+                Console.WriteLine($"- {p.ProductId}: {p.ProductName} - {p.ProductPrice:C} - {p.ProductQtt}");
             }
-            else
-            {
-                ProductManager.FindProductWithName(choose);
-            }
-
-            Console.WriteLine("--------------------------------");
-            int inputIdtoBuy = MProgram.InputParse.GetInt("Input Id Product want to buy");
-            OrderManager.CheckIdtoBuy(inputIdtoBuy, inputUser);
+            
+            //int inputIdtoBuy = MProgram.InputParse.GetInt("Input Id Product want to buy");
+ 
+            OrderManager.CreatOrder( inputUser, listProduct);
         }
     }
 
