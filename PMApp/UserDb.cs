@@ -45,13 +45,7 @@ public class UserDb
         {
             string inputNameProduct = MProgram.InputParse.GetString("Input name product to Find or Press 0 to See all");            
             var listProduct = ProductManager.CreatListProduct(inputNameProduct);
-            foreach (var p in listProduct)
-            {
-                Console.WriteLine($"- {p.ProductId}: {p.ProductName} - {p.ProductPrice:C} - {p.ProductQtt}");
-            }
             
-            //int inputIdtoBuy = MProgram.InputParse.GetInt("Input Id Product want to buy");
- 
             OrderManager.CreatOrder( inputUser, listProduct);
         }
     }

@@ -12,6 +12,10 @@ public class OrderManager
     //============================================================================================================================ BUY
     public static int CreatOrder( string inputUserId, List<Product> inputListProduct)
     {
+        foreach (var p in inputListProduct)
+        {
+            Console.WriteLine($"- {p.ProductId}: {p.ProductName} - {p.ProductPrice:C} - {p.ProductQtt}");
+        }
         int inputProductId = MProgram.InputParse.GetInt("Input Id Product want to buy or Press 0 to retun User Menu");
         if (inputProductId == 0)
             return 0;
@@ -32,7 +36,7 @@ public class OrderManager
                     int updateQtt = productToBuy.ProductQtt - inputQttToBuy;
                     decimal updateWallet = userToBuy.UserWallet - (productToBuy.ProductPrice * inputQttToBuy);
 
-                    if (updateQtt >= 0 && updateWallet >= 0)
+                    if (updateQtt >= 0 && updateWallet >= 0 && inputQttToBuy >0)
                     {
                         var orderToCheck = context.Orders
                             .FirstOrDefault(p => p.Products.ProductId == inputProductId && p.Users.UserId == inputUserId);
@@ -45,7 +49,7 @@ public class OrderManager
                             productToBuy.ProductQtt = updateQtt;
                             context.SaveChanges();
 
-                            Console.WriteLine($"Buying.... {orderToCheck.Products.ProductName}: {orderToCheck.OrderQtt} ");
+                            Console.WriteLine($"Buying.... {orderToCheck.Products.ProductName}: {inputQttToBuy} ");
 
                         }
                         else // Crear new
@@ -64,25 +68,25 @@ public class OrderManager
                         Console.WriteLine($"Your Wallet: {userToBuy.UserWallet} $");
                         Console.ReadLine();
                         ShowAllOrder(inputUserId);
+                        return 0;
                     }
 
                     else if (updateWallet < 0) // fail with Wallet < 0 after Buy
                     {
-                        Console.WriteLine("Your balance not enough. Input again");
-                        return CreatOrder(inputUserId, inputListProduct); ;
+                        Console.WriteLine("Your balance not enough. Input again");  
+                        return CreatOrder(inputUserId, inputListProduct);
                     }
                     
                     else  // fail with Qtt < 0 after Buy
                     {
                         Console.WriteLine("Qtt invalid. Input again");
+                        return CreatOrder(inputUserId, inputListProduct);
                     }
-                    return CreatOrder(inputUserId, inputListProduct); ;
-
                 }
             }        
                 continue;            
         }
-        Console.WriteLine("\nError: Id invalid. Input again.");        
+        Console.WriteLine("\nError: Id invalid. Input again.");
         return CreatOrder(inputUserId, inputListProduct);
     }
 
@@ -111,7 +115,7 @@ public class OrderManager
             {
                 foreach (var p in allOrder)
                 {
-                    Console.WriteLine($"- user: {p.UserId} - productid: {p.ProductId} - productname {p.ProductName}: {p.OrderQtt}");
+                    Console.WriteLine($"- Product: {p.ProductId} - {p.ProductName} : {p.OrderQtt}");
                 }
 
             }

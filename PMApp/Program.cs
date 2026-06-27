@@ -13,9 +13,7 @@ public class Program
         using (var context = new AppContext())
         {
             context.Database.Migrate();
-        }
-        Console.WriteLine("Database migrated.");        
-
+        }        
         while (true)
         {            
             DbClasses.UserDb.ShowAllUser();

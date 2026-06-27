@@ -11,33 +11,44 @@ public class ProductManager
     //============================================================================================================ CREATE
     public static void CreateProduct()
     {
-
-        ShowAllProduct();
-        Console.WriteLine("\n------ Creating a product ------");
-        string inputName = MProgram.InputParse.GetString("Input Name or Press 0 retun Main Menu");
-
-        if (inputName == "0") 
-            return;
-
-
-        int inputPrice = MProgram.InputParse.GetInt("Input Price or Press 0 retun Main Menu ");
-        
-        if (inputPrice == 0)
-            return;
-
-
-        int inputQtt = MProgram.InputParse.GetInt("Input Quantity or Press 0 retun Main Menu");
-
-        if (inputQtt == 0)
-            return;
-        
-        using (var context = new AppContext())
+        while (true)
         {
-            var product = new Product { ProductName = inputName, ProductPrice = inputPrice, ProductQtt = inputQtt };
-            context.Products.Add(product);
-            context.SaveChanges();
-            Console.WriteLine($"Add Product Done: {product.ProductId} - {product.ProductName} - {product.ProductPrice} - {product.ProductQtt}");
             ShowAllProduct();
+            Console.WriteLine("\n------ Creating a product ------");
+            string inputName = MProgram.InputParse.GetString("Input Name or Press 0 retun Main Menu");
+
+            if (inputName == "0")
+                return;
+
+
+            int inputPrice = MProgram.InputParse.GetInt("Input Price or Press 0 retun Main Menu ");
+
+            if (inputPrice == 0)
+                return;
+            if (inputPrice < 0)
+            {
+                Console.WriteLine("Price invalid");
+                continue;
+            }
+
+
+            int inputQtt = MProgram.InputParse.GetInt("Input Quantity or Press 0 retun Main Menu");
+
+            if (inputQtt == 0)
+                return;
+            if (inputQtt < 0)
+            {
+                Console.WriteLine("Qtt invalid");
+                continue; }
+
+            using (var context = new AppContext())
+            {
+                var product = new Product { ProductName = inputName, ProductPrice = inputPrice, ProductQtt = inputQtt };
+                context.Products.Add(product);
+                context.SaveChanges();
+                Console.WriteLine($"Add Product Done: {product.ProductId} - {product.ProductName} - {product.ProductPrice} - {product.ProductQtt}");
+                ShowAllProduct();
+            }
         }
     }
 
@@ -51,7 +62,10 @@ public class ProductManager
         using (var context = new AppContext())
         {
             int inputId = MProgram.InputParse.GetInt("Input Id to update");
-            var productToUpdate = context.Products.Find(inputId);
+            var productToUpdate = context.Products
+                .Where(p => p.ProductStatus == 1 && p.ProductId == inputId)
+                .FirstOrDefault();
+                
 
             if (productToUpdate != null)
             {
@@ -80,22 +94,27 @@ public class ProductManager
         Console.WriteLine("\n------ Deleting a product ------");
         using (var context = new AppContext())
         {
-            int inputId = MProgram.InputParse.GetInt("Input Id to delete");
+            int inputId = MProgram.InputParse.GetInt("Input Id to delete or Press 0 to return");
 
             var productToDelete = context.Products.Find(inputId);
 
-            if (productToDelete != null)
+            if (productToDelete != null && productToDelete.ProductStatus == 1)
             {
                 Console.WriteLine($"Deleting product: '{productToDelete.ProductName}'");
-                context.Products.Remove(productToDelete);
+                productToDelete.ProductStatus = 0;
+                //context.Products.Remove(productToDelete);
 
                 context.SaveChanges();
 
                 Console.WriteLine("Product deleted.");
+
                 // --- Verify DELETE
                 Console.WriteLine("\n------ Verifying deletion ------");
 
-                var remainingProducts = context.Products.ToList();
+                var remainingProducts = context.Products
+                    .Where(p=>p.ProductStatus==1)
+                    .ToList();
+
                 Console.WriteLine("Remaining products:");
                 if (remainingProducts.Any())
                 {
@@ -111,6 +130,10 @@ public class ProductManager
 
                 Console.WriteLine("\nDone.");
             }
+            else if (productToDelete != null && productToDelete.ProductStatus == 0)
+            {
+                Console.WriteLine($"Product with Id {inputId} already deleted.");
+            }
             else
             {
                 Console.WriteLine($"Product with Id {inputId} not found for deletion.");
@@ -123,11 +146,13 @@ public class ProductManager
     {
         using (var context = new AppContext())
         {
-            var allProduct = context.Products.ToList();
+            var allProduct = context.Products
+                .Where(p => p.ProductStatus == 1)
+                .ToList();
             if (inputNameProduct != "0")
             {
                 var samenameProduct = context.Products
-                    .Where(p => p.ProductName.Contains(inputNameProduct))
+                    .Where(p => p.ProductName.Contains(inputNameProduct) && p.ProductStatus == 1)
                     .OrderBy(p => p.ProductId)
                     .ToList();
                 if (samenameProduct.Count != 0)
@@ -154,8 +179,21 @@ public class ProductManager
         {
             Console.WriteLine("--------------------------------");
             Console.WriteLine("----------All products----------");
-            var allProducts = context.Products.ToList();
-            foreach (var p in allProducts)
+            var allProducts1 = context.Products
+                .Where(p=>p.ProductStatus==1)
+                .ToList();
+            Console.WriteLine("Available");
+            foreach (var p in allProducts1)
+            {                
+                Console.WriteLine($"- {p.ProductId}: {p.ProductName} - {p.ProductPrice:C} - {p.ProductQtt}");
+            }
+
+            Console.WriteLine("--------------------------------");
+            var allProducts2 = context.Products
+                .Where(p => p.ProductStatus == 0)
+                .ToList();
+            Console.WriteLine("Deleted");
+            foreach (var p in allProducts2)
             {
                 Console.WriteLine($"- {p.ProductId}: {p.ProductName} - {p.ProductPrice:C} - {p.ProductQtt}");
             }

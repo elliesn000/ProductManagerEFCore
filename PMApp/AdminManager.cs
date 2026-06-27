@@ -22,7 +22,6 @@ public class AdminManager
 3. Delete Product
 4. Add Demo Product
 5. See All Product
-6. Delete User (process)
 
 0. Return Login Menu
 
@@ -40,21 +39,21 @@ Press Number to choose
 
                 case 1: //--- CREAT
                     {
-                        Console.Clear();
+                        
                         DbClasses.ProductManager.CreateProduct();
                         break;
                     }
 
                 case 2: //--- UPDATE QTT
                     {
-                        Console.Clear();
+                        
                         DbClasses.ProductManager.UpdateQttProduct();
                         continue;
                     }
 
                 case 3:  //--- DELETE                
                     {
-                        Console.Clear();
+                        
                         DbClasses.ProductManager.DeleteProduct();
                         continue;
                     }
@@ -65,9 +64,9 @@ Press Number to choose
                         Console.WriteLine("\n------Creating New Product------");
                         using (var context = new AppContext())
                         {
-                            var product1 = new Product { ProductName = "Test1", ProductPrice = 1200.50m, ProductQtt = 5 };
-                            var product2 = new Product { ProductName = "Test2", ProductPrice = 75.00m, ProductQtt = 8 };
-                            var product3 = new Product { ProductName = "Test3", ProductPrice = 25.99m, ProductQtt = 12 };
+                            var product1 = new Product { ProductName = "Book1", ProductPrice = 20.50m, ProductQtt = 11 };
+                            var product2 = new Product { ProductName = "NoteBook2", ProductPrice = 55.00m, ProductQtt = 23 };
+                            var product3 = new Product { ProductName = "PencilBook3", ProductPrice = 37.56m, ProductQtt = 8 };
 
                             context.Products.Add(product1);
                             context.Products.AddRange(product2, product3);
@@ -88,7 +87,7 @@ Press Number to choose
 
 
             }
-            Console.Clear();
+            
             Console.WriteLine("Input Invalid, Input again or Press 0 to return Login Menu");
             continue;
         }
